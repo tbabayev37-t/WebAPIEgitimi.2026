@@ -8,6 +8,7 @@
     (
         Guid Id,
         Guid ProductId,
-        string ProductName
+        string ProductName,
+        string CategoryName
     );
 }

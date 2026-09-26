@@ -15,12 +15,20 @@ namespace WebAPIEgitimi.MinimalAPI.Modules
             app.MapGet(string.Empty, (ApplicationDbContext dbContext) => {
 
                 var res = dbContext.Baskets
-                    .LeftJoin(dbContext.Products, b => b.ProductId, p=>p.Id, (basket, product) => new { basket, product })
-                    .Select(s => new BasketDto(
-                        s.basket.Id, 
-                        s.product.Id, 
-                        s.product != null ? s.product.Name : string.Empty))
-                    .ToList();
+                 .LeftJoin(dbContext.Products, b => b.ProductId, p => p.Id, (basket, product) => new { basket, product })
+                 .LeftJoin(dbContext.Categories, bp => bp.product != null ? bp.product.CategoryId : Guid.Empty, c => c.Id, (bp, category) => new
+                 {
+                     bp.basket,
+                     bp.product,
+                     category
+                 })
+                 .Select(s => new BasketDto(
+                     s.basket.Id,
+                     s.basket.ProductId,
+                     s.product != null ? s.product.Name : string.Empty,
+                     s.category != null ? s.category.Name : string.Empty 
+                 ))
+                 .ToList();
 
                 return res;
             });
